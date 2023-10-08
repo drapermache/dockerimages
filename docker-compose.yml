@@ -40,8 +40,10 @@ services:
    - /home/dockeruser/radarr/downloads:/downloads
    - /home/dockeruser/radarr/movies:/movies
    - /etc/localtime:/etc/localtime:ro
-   - /home/dockeruser/transmission/complete:/data/completed
-   - /home/dockeruser/transmission/incomplete:/data/incomplete
+     #   - /home/dockeruser/transmission/complete:/data/completed
+     #   - /home/dockeruser/transmission/incomplete:/data/incomplete
+   - /home/dockeruser/sabnzbd/config/Downloads/complete:/config/Downloads/complete
+   - /home/dockeruser/sabnzbd/config/incomplete:/incomplete-downloads
   environment:
    - TZ=America/Chicago
    - PUID = 911
@@ -80,6 +82,8 @@ services:
     - WEBPROXY_ENABLED=false
     - PUID = 911
     - PGID = 1001
+  security_opt:
+    - seccomp:unconfined
  jackett:
   container_name: jackett
   restart: unless-stopped
@@ -111,8 +115,10 @@ services:
    - /home/dockeruser/transmission/incomplete:/data/incomplete
    - /mnt/media/tv_shows:/data/tvshows
    - /mnt/media/movies:/data/movies
-   - /home/dockeruser/jackett/config:/config
-   - /home/dockeruser/jackett/downloads:/download
+     # - /home/dockeruser/jackett/config:/config
+     # - /home/dockeruser/jackett/downloads:/download
+   - /home/dockeruser/sabnzbd/config/Downloads/complete:/config/Downloads/complete
+   - /home/dockeruser/sabnzbd/config/incomplete:/incomplete-downloads
  portainer:
   image: portainer/portainer
   container_name: portainer
@@ -142,18 +148,18 @@ services:
    - /mnt/media/tv_shows:/data/tvshows
   ports:
    - "6767:6767"
- organizr:
-  image: linuxserver/organizr
-  container_name: organizr
-  environment:
-   - PUID=911
-   - GUID=1001
-   - TZ=America/Chicago
-  volumes:
-   - '/home/dockeruser/organizr/config:/config'
-  ports:
-   - 9983:80
-  restart: unless-stopped
+     # organizr:
+     # image: linuxserver/organizr
+     # container_name: organizr
+     # environment:
+     # - PUID=911
+     # - GUID=1001
+     # - TZ=America/Chicago
+     # volumes:
+     # - '/home/dockeruser/organizr/config:/config'
+     # ports:
+     # - 9983:80
+     # restart: unless-stopped
  ombi:
   image: linuxserver/ombi
   container_name: ombi
@@ -172,11 +178,43 @@ services:
   container_name: tautulli
   environment:
    - PUID = 911
-   - GUID - 1001
+   - GUID = 1001
    - TZ=America/Chicago
   volumes:
    - '/home/dockeruser/tautulli/config:/config'
    - '/home/dockeruser/plex/config/logs:/plex_logs:ro'
   ports:
    - '8181:8181'
+  restart: unless-stopped
+  # minecraft:
+  # image: itzg/minecraft-server
+  # container_name: minecraft
+  # ports:
+  # - "25565:25565"
+  # environment:
+  # EULA: "TRUE"
+  # SERVER_NAME: "Hello Michael"
+  # MOTD: "Peaceful World"
+  # DIFFICULTY: "peaceful"
+  # MEMORY: 2G
+  # tty: true
+  # stdin_open: true
+  # restart: unless-stopped
+  # volumes:
+  # - "/mnt/minecraft:/data"
+  # - "/mnt/minecraft/plugins:/data/plugins"
+  # - "/mnt/minecraft/mods:/data/mods"
+ sabnzbdz:
+  image: lscr.io/linuxserver/sabnzbd:latest
+  environment:
+   - PUID= 911
+   - GUID= 1001
+   - TZ=America/Chicago
+  ports:
+   - 8080:8080
+  volumes:
+   - "/etc/localtime:/etc/localtime:ro"
+   - "/mnt/media/tv_shows:/data/tvshows"
+   - "/mnt/media/movies:/data/movies"
+   - "/home/dockeruser/sabnzbd/config:/config"
   restart: unless-stopped
