@@ -40,8 +40,8 @@ services:
    - /home/dockeruser/radarr/downloads:/downloads
    - /home/dockeruser/radarr/movies:/movies
    - /etc/localtime:/etc/localtime:ro
-     #   - /home/dockeruser/transmission/complete:/data/completed
-     #   - /home/dockeruser/transmission/incomplete:/data/incomplete
+   - /home/dockeruser/transmission/complete:/data/completed
+   - /home/dockeruser/transmission/incomplete:/data/incomplete
    - /home/dockeruser/sabnzbd/config/Downloads/complete:/config/Downloads/complete
    - /home/dockeruser/sabnzbd/config/incomplete:/incomplete-downloads
   environment:
