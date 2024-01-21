@@ -186,24 +186,24 @@ services:
   ports:
    - '8181:8181'
   restart: unless-stopped
-  # minecraft:
-  # image: itzg/minecraft-server
-  # container_name: minecraft
-  # ports:
-  # - "25565:25565"
-  # environment:
-  # EULA: "TRUE"
-  # SERVER_NAME: "Hello Michael"
-  # MOTD: "Peaceful World"
-  # DIFFICULTY: "peaceful"
-  # MEMORY: 2G
-  # tty: true
-  # stdin_open: true
-  # restart: unless-stopped
-  # volumes:
-  # - "/mnt/minecraft:/data"
-  # - "/mnt/minecraft/plugins:/data/plugins"
-  # - "/mnt/minecraft/mods:/data/mods"
+ minecraft:
+  image: itzg/minecraft-server
+  container_name: minecraft
+  ports:
+  - "25565:25565"
+  environment:
+   EULA: "TRUE"
+   SERVER_NAME: "Hello Michael"
+   MOTD: "Peaceful World"
+   DIFFICULTY: "peaceful"
+   MEMORY: 4G
+  tty: true
+  stdin_open: true
+  restart: unless-stopped
+  volumes:
+  - "/mnt/minecraft:/data"
+  - "/mnt/minecraft/plugins:/data/plugins"
+  - "/mnt/minecraft/mods:/data/mods"
  sabnzbdz:
   image: lscr.io/linuxserver/sabnzbd:latest
   environment:
@@ -217,4 +217,28 @@ services:
    - "/mnt/media/tv_shows:/data/tvshows"
    - "/mnt/media/movies:/data/movies"
    - "/home/dockeruser/sabnzbd/config:/config"
+  restart: unless-stopped
+ homarr:
+  image: ghcr.io/ajnart/homarr:latest
+  restart: unless-stopped
+  volumes:
+   - "/home/dockeruser/homarr/configs:/app/data/configs"
+   - "/home/dockeruser/homarr/icons:/app/public/icons"
+  ports:
+   - 7575:7575
+  environment:
+   - PUID = 911
+   - GUID = 1001
+   - TZ=America/Chicago
+ prowlarr:
+  image: lscr.io/linuxserver/prowlarr:latest
+  container_name: prowlarr
+  environment:
+   - PUID= 911
+   - GUID= 1001
+   - TZ=America/Chicago
+  volumes:
+   - "/home/dockeruser/prowlarr/config:/config"
+  ports:
+   - 9696:9696
   restart: unless-stopped
