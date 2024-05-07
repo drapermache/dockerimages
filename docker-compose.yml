@@ -19,9 +19,8 @@ services:
    - "32469:32469/udp"
    - "5353:5353" # (for older Bonjour/Avahi network discovery)
    - "1900:1900/udp" #(for access to the Plex DLNA Server)
-
   volumes:
-   - /home/dockeruser/plex/config:/config
+   - /home/appadmin/plex/config:/config
    - /mnt/media/tv_shows:/data/tvshows
    - /mnt/media/movies:/data/movies
    - /media/brandon/My Book/Music:/data/Music
@@ -32,18 +31,18 @@ services:
   ports:
    - "7878:7878"
   volumes:
-   - /home/dockeruser/plex/config:/config
+   - /home/appadmin/plex/config:/config
    - /mnt/media/tv_shows:/data/tvshows
    - /mnt/media/movies:/data/movies
    - /media/brandon/My Book/Music/:/data/Music
-   - /home/dockeruser/radarr/config:/config
-   - /home/dockeruser/radarr/downloads:/downloads
-   - /home/dockeruser/radarr/movies:/movies
+   - /home/appadmin/radarr/config:/config
+   - /home/appadmin/radarr/downloads:/downloads
+   - /home/appadmin/radarr/movies:/movies
    - /etc/localtime:/etc/localtime:ro
-   - /home/dockeruser/transmission/complete:/data/completed
-   - /home/dockeruser/transmission/incomplete:/data/incomplete
-   - /home/dockeruser/sabnzbd/config/Downloads/complete:/config/Downloads/complete
-   - /home/dockeruser/sabnzbd/config/incomplete:/incomplete-downloads
+   - /home/appadmin/transmission/complete:/data/completed
+   - /home/appadmin/transmission/incomplete:/data/incomplete
+   - /home/appadmin/sabnzbd/config/Downloads/complete:/config/Downloads/complete
+   - /home/appadmin/sabnzbd/config/incomplete:/incomplete-downloads
   environment:
    - TZ=America/Chicago
    - PUID = 911
@@ -63,15 +62,15 @@ services:
    - 8.8.4.4
   volumes:
     - /etc/localtime:/etc/localtime:ro
-    - /home/dockeruser/plex/config:/config
+    - /home/appadmin/plex/config:/config
     - /mnt/media/tv_shows:/data/tvshows
     - /mnt/media/movies:/data/movies
     - /media/brandon/My Book/Music:/data/Music
-    - /home/dockeruser/transmission/config:/config
-    - /home/dockeruser/transmission/download:/downloads
-    - /home/dockeruser/transmission/watch:/watch
-    - /home/dockeruser/transmission/complete:/data/completed
-    - /home/dockeruser/transmission/incomplete:/data/incomplete
+    - /home/appadmin/transmission/config:/config
+    - /home/appadmin/transmission/download:/downloads
+    - /home/appadmin/transmission/watch:/watch
+    - /home/appadmin/transmission/complete:/data/completed
+    - /home/appadmin/transmission/incomplete:/data/incomplete
   environment:
     - OPENVPN_PROVIDER=PIA
     - OPENVPN_USERNAME=${pia_uname}
@@ -91,10 +90,10 @@ services:
    - "9117:9117"
   image: linuxserver/jackett
   volumes:
-   - /home/dockeruser/jackett/config:/config
-   - /home/dockeruser/jackett/downloads:/download
-   - /home/dockeruser/sonarr:/data/config/sonarr
-   - /home/dockeruser/radarr:/data/config/radarr
+   - /home/appadmin/jackett/config:/config
+   - /home/appadmin/jackett/downloads:/download
+   - /home/appadmin/sonarr:/data/config/sonarr
+   - /home/appadmin/radarr:/data/config/radarr
    - /etc/localtime:/etc/localtime:ro
  sonarr:
   image: linuxserver/sonarr
@@ -108,17 +107,17 @@ services:
    - "8989:8989"
   volumes:
    - /etc/localtime:/etc/localtime:ro
-   - /home/dockeruser/sonarr/config:/config
-   - /home/dockeruser/sonarr/tv:/tv
+   - /home/appadmin/sonarr/config:/config
+   - /home/appadmin/sonarr/tv:/tv
    - /home/docker/sonarr/download:/downloads
-   - /home/dockeruser/transmission/complete:/data/completed
-   - /home/dockeruser/transmission/incomplete:/data/incomplete
+   - /home/appadmin/transmission/complete:/data/completed
+   - /home/appadmin/transmission/incomplete:/data/incomplete
    - /mnt/media/tv_shows:/data/tvshows
    - /mnt/media/movies:/data/movies
-     # - /home/dockeruser/jackett/config:/config
-     # - /home/dockeruser/jackett/downloads:/download
-   - /home/dockeruser/sabnzbd/config/Downloads/complete:/config/Downloads/complete
-   - /home/dockeruser/sabnzbd/config/incomplete:/incomplete-downloads
+     # - /home/appadmin/jackett/config:/config
+     # - /home/appadmin/jackett/downloads:/download
+   - /home/appadmin/sabnzbd/config/Downloads/complete:/config/Downloads/complete
+   - /home/appadmin/sabnzbd/config/incomplete:/incomplete-downloads
  portainer:
   image: portainer/portainer
   container_name: portainer
@@ -127,7 +126,7 @@ services:
    - "9000:9000"
   volumes:
    - '/var/run/docker.sock:/var/run/docker.sock'
-   - "/home/dockeruser/portainer/configs/:/data"
+   - "/home/appadmin/portainer/configs/:/data"
  watchtower:
   image: v2tec/watchtower
   container_name: watchtower
@@ -143,7 +142,7 @@ services:
    - PUID = 911
    - PGID = 1001
   volumes:
-   - /home/dockeruser/bazarr/config:/config
+   - /home/appadmin/bazarr/config:/config
    - /mnt/media/movies:/data/movies
    - /mnt/media/tv_shows:/data/tvshows
   ports:
@@ -156,7 +155,7 @@ services:
      # - GUID=1001
      # - TZ=America/Chicago
      # volumes:
-     # - '/home/dockeruser/organizr/config:/config'
+     # - '/home/appadmin/organizr/config:/config'
      # ports:
      # - 9983:80
      # restart: unless-stopped
@@ -169,7 +168,7 @@ services:
    - TZ=America/Chicago
    - BASE_URL=/ombi
   volumes:
-   - '/home/dockeruser/ombi/config:/config'
+   - '/home/appadmin/ombi/config:/config'
   ports:
    - 3579:3579
   restart: unless-stopped
@@ -181,29 +180,29 @@ services:
    - GUID = 1001
    - TZ=America/Chicago
   volumes:
-   - '/home/dockeruser/tautulli/config:/config'
-   - '/home/dockeruser/plex/config/logs:/plex_logs:ro'
+   - '/home/appadmin/tautulli/config:/config'
+   - '/home/appadmin/plex/config/logs:/plex_logs:ro'
   ports:
    - '8181:8181'
   restart: unless-stopped
-  # minecraft:
-  # image: itzg/minecraft-server
-  # container_name: minecraft
-  # ports:
-  # - "25565:25565"
-  # environment:
-  # EULA: "TRUE"
-  # SERVER_NAME: "Hello Michael"
-  # MOTD: "Peaceful World"
-  # DIFFICULTY: "peaceful"
-  # MEMORY: 2G
-  # tty: true
-  # stdin_open: true
-  # restart: unless-stopped
-  # volumes:
-  # - "/mnt/minecraft:/data"
-  # - "/mnt/minecraft/plugins:/data/plugins"
-  # - "/mnt/minecraft/mods:/data/mods"
+ minecraft:
+  image: itzg/minecraft-server
+  container_name: minecraft
+  ports:
+  - "25565:25565"
+  environment:
+   EULA: "TRUE"
+   SERVER_NAME: "Hello Michael"
+   MOTD: "Peaceful World"
+   DIFFICULTY: "peaceful"
+   MEMORY: 4G
+  tty: true
+  stdin_open: true
+  restart: unless-stopped
+  volumes:
+  - "/mnt/minecraft:/data"
+  - "/mnt/minecraft/plugins:/data/plugins"
+  - "/mnt/minecraft/mods:/data/mods"
  sabnzbdz:
   image: lscr.io/linuxserver/sabnzbd:latest
   environment:
@@ -216,5 +215,29 @@ services:
    - "/etc/localtime:/etc/localtime:ro"
    - "/mnt/media/tv_shows:/data/tvshows"
    - "/mnt/media/movies:/data/movies"
-   - "/home/dockeruser/sabnzbd/config:/config"
+   - "/home/appadmin/sabnzbd/config:/config"
+  restart: unless-stopped
+ homarr:
+  image: ghcr.io/ajnart/homarr:latest
+  restart: unless-stopped
+  volumes:
+   - "/home/appadmin/homarr/configs:/app/data/configs"
+   - "/home/appadmin/homarr/icons:/app/public/icons"
+  ports:
+   - 7575:7575
+  environment:
+   - PUID = 911
+   - GUID = 1001
+   - TZ=America/Chicago
+ prowlarr:
+  image: lscr.io/linuxserver/prowlarr:latest
+  container_name: prowlarr
+  environment:
+   - PUID= 911
+   - GUID= 1001
+   - TZ=America/Chicago
+  volumes:
+   - "/home/appadmin/prowlarr/config:/config"
+  ports:
+   - 9696:9696
   restart: unless-stopped
