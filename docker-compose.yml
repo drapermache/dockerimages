@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
  linuxserver-plex:
   container_name: plex
@@ -6,8 +6,8 @@ services:
   image: linuxserver/plex:latest
   environment:
    - TZ=America/Chicago
-   - PUID = 911
-   - PGID = 1001
+   - PUID=911
+   - PGID=1001
   ports:
    - "32400:32400" #(for access to the Plex Media Server) [required]
    - "32400:32400/udp"
@@ -23,7 +23,14 @@ services:
    - /home/appadmin/plex/config:/config
    - /mnt/media/tv_shows:/data/tvshows
    - /mnt/media/movies:/data/movies
-   - /media/brandon/My Book/Music:/data/Music
+   - /mnt/media/music:/data/music
+  deploy:
+   resources:
+    reservations:
+     devices:
+      - driver: nvidia
+        count: all
+        capabilities: [gpu]
  linuxserver-radarr:
   container_name: radarr
   restart: unless-stopped
@@ -45,44 +52,44 @@ services:
    - /home/appadmin/sabnzbd/config/incomplete:/incomplete-downloads
   environment:
    - TZ=America/Chicago
-   - PUID = 911
-   - PGID = 1001
+   - PUID=911
+   - PGID=1001
  transmission:
   image: haugene/transmission-openvpn
   cap_add:
-    - NET_ADMIN
+   - NET_ADMIN
   devices:
    - /dev/net/tun
   restart: always
   ports:
-    - "9091:9091"
-    - "8888:8888"
+   - "9091:9091"
+   - "8888:8888"
   dns:
    - 8.8.8.8
    - 8.8.4.4
   volumes:
-    - /etc/localtime:/etc/localtime:ro
-    - /home/appadmin/plex/config:/config
-    - /mnt/media/tv_shows:/data/tvshows
-    - /mnt/media/movies:/data/movies
-    - /media/brandon/My Book/Music:/data/Music
-    - /home/appadmin/transmission/config:/config
-    - /home/appadmin/transmission/download:/downloads
-    - /home/appadmin/transmission/watch:/watch
-    - /home/appadmin/transmission/complete:/data/completed
-    - /home/appadmin/transmission/incomplete:/data/incomplete
+   - /etc/localtime:/etc/localtime:ro
+   - /home/appadmin/plex/config:/config
+   - /mnt/media/tv_shows:/data/tvshows
+   - /mnt/media/movies:/data/movies
+   - /home/appadmin/transmission/config:/config
+   - /home/appadmin/transmission/download:/downloads
+   - /home/appadmin/transmission/watch:/watch
+   - /home/appadmin/transmission/complete:/data/completed
+   - /home/appadmin/transmission/incomplete:/data/incomplete
+   - /mnt/media/music:/data/music
   environment:
-    - OPENVPN_PROVIDER=PIA
-    - OPENVPN_USERNAME=${pia_uname}
-    - OPENVPN_PASSWORD=${pia_pass}
-    - OPENVPN_CONFIG=france
-    - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
-    - LOCAL_NETWORK=192.168.0.0/16
-    - WEBPROXY_ENABLED=false
-    - PUID = 911
-    - PGID = 1001
+   - OPENVPN_PROVIDER=PIA
+   - OPENVPN_USERNAME=${pia_uname}
+   - OPENVPN_PASSWORD=${pia_pass}
+   - OPENVPN_CONFIG=france
+   - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+   - LOCAL_NETWORK=192.168.0.0/16
+   - WEBPROXY_ENABLED=false
+   - PUID=911
+   - PGID=1001
   security_opt:
-    - seccomp:unconfined
+   - seccomp:unconfined
  jackett:
   container_name: jackett
   restart: unless-stopped
@@ -101,8 +108,8 @@ services:
   container_name: sonarr
   environment:
    - TZ=America/Chicago
-   - PUID = 911
-   - PGID = 1001
+   - PUID=911
+   - PGID=1001
   ports:
    - "8989:8989"
   volumes:
@@ -125,22 +132,22 @@ services:
   ports:
    - "9000:9000"
   volumes:
-   - '/var/run/docker.sock:/var/run/docker.sock'
-   - "/home/appadmin/portainer/configs/:/data"
+   - /var/run/docker.sock:/var/run/docker.sock
+   - /home/appadmin/portainer/configs/:/data
  watchtower:
   image: v2tec/watchtower
   container_name: watchtower
   restart: unless-stopped
   volumes:
-   - '/var/run/docker.sock:/var/run/docker.sock'
+   - /var/run/docker.sock:/var/run/docker.sock
  bazarr:
   image: linuxserver/bazarr
   container_name: bazarr
   restart: unless-stopped
   environment:
    - TZ=America/Chicago
-   - PUID = 911
-   - PGID = 1001
+   - PUID=911
+   - PGID=1001
   volumes:
    - /home/appadmin/bazarr/config:/config
    - /mnt/media/movies:/data/movies
@@ -158,17 +165,17 @@ services:
      # - '/home/appadmin/organizr/config:/config'
      # ports:
      # - 9983:80
-     # restart: unless-stopped
+  restart: unless-stopped
  ombi:
   image: linuxserver/ombi
   container_name: ombi
   environment:
-   - PUID= 911
-   - GUID= 1001
+   - PUID=911
+   - PGID=1001
    - TZ=America/Chicago
    - BASE_URL=/ombi
   volumes:
-   - '/home/appadmin/ombi/config:/config'
+   - /home/appadmin/ombi/config:/config
   ports:
    - 3579:3579
   restart: unless-stopped
@@ -176,12 +183,12 @@ services:
   image: tautulli/tautulli
   container_name: tautulli
   environment:
-   - PUID = 911
-   - GUID = 1001
+   - PUID=911
+   - PGID=1001
    - TZ=America/Chicago
   volumes:
-   - '/home/appadmin/tautulli/config:/config'
-   - '/home/appadmin/plex/config/logs:/plex_logs:ro'
+   - /home/appadmin/tautulli/config:/config
+   - /home/appadmin/plex/config/logs:/plex_logs:ro
   ports:
    - '8181:8181'
   restart: unless-stopped
@@ -189,7 +196,7 @@ services:
   image: itzg/minecraft-server
   container_name: minecraft
   ports:
-  - "25565:25565"
+   - "25565:25565"
   environment:
    EULA: "TRUE"
    SERVER_NAME: "Hello Michael"
@@ -200,44 +207,96 @@ services:
   stdin_open: true
   restart: unless-stopped
   volumes:
-  - "/mnt/minecraft:/data"
-  - "/mnt/minecraft/plugins:/data/plugins"
-  - "/mnt/minecraft/mods:/data/mods"
+   - /mnt/minecraft:/data
+   - /mnt/minecraft/plugins:/data/plugins
+   - /mnt/minecraft/mods:/data/mods
  sabnzbdz:
   image: lscr.io/linuxserver/sabnzbd:latest
   environment:
-   - PUID= 911
-   - GUID= 1001
+   - PUID=911
+   - PGID=1001
    - TZ=America/Chicago
   ports:
    - 8080:8080
   volumes:
-   - "/etc/localtime:/etc/localtime:ro"
-   - "/mnt/media/tv_shows:/data/tvshows"
-   - "/mnt/media/movies:/data/movies"
-   - "/home/appadmin/sabnzbd/config:/config"
+   - /etc/localtime:/etc/localtime:ro
+   - /mnt/media/tv_shows:/data/tvshows
+   - /mnt/media/movies:/data/movies
+   - /home/appadmin/sabnzbd/config:/config
+   - /mnt/media/music:/data/music
   restart: unless-stopped
  homarr:
   image: ghcr.io/ajnart/homarr:latest
   restart: unless-stopped
   volumes:
-   - "/home/appadmin/homarr/configs:/app/data/configs"
-   - "/home/appadmin/homarr/icons:/app/public/icons"
+   - /home/appadmin/homarr/configs:/app/data/configs
+   - /home/appadmin/homarr/icons:/app/public/icons
   ports:
    - 7575:7575
   environment:
-   - PUID = 911
-   - GUID = 1001
+   - PUID=911
+   - PGID=1001
    - TZ=America/Chicago
  prowlarr:
   image: lscr.io/linuxserver/prowlarr:latest
   container_name: prowlarr
   environment:
-   - PUID= 911
-   - GUID= 1001
+   - PUID=911
+   - PGID=1001
    - TZ=America/Chicago
   volumes:
-   - "/home/appadmin/prowlarr/config:/config"
+   - /home/appadmin/prowlarr/config:/config
   ports:
    - 9696:9696
+  restart: unless-stopped
+ lidarr:
+  image: lscr.io/linuxserver/lidarr:latest
+  container_name: lidarr
+  environment:
+   - PUID=911
+   - PGID=1001
+   - TZ=Etc/UTC
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   - /mnt/media/music:/data/music
+   - /home/appadmin/transmission/complete:/data/completed
+   - /home/appadmin/sabnzbd/config/Downloads/complete:/config/Downloads/complete
+   - /home/appadmin/transmission/incomplete:/data/incomplete
+   - /home/appadmin/sabnzbd/config/incomplete:/incomplete-downloads
+   - /home/appadmin/lidarr/config:/config
+  ports:
+   - 8686:8686
+  restart: unless-stopped
+ jellyfin:
+  image: lscr.io/linuxserver/jellyfin:latest
+  container_name: jellyfin
+  environment:
+   - PUID=911
+   - PGID=1001
+   - TZ=Etc/UTC
+   - JELLYFIN_PublishedServerUrl=http://192.168.1.53 #optional
+  volumes:
+   - /home/appadmin/jellyfin/config:/config
+   - /mnt/media/tv_shows:/data/tvshows
+   - /mnt/media/movies:/data/movies
+   - /home/appadmin/radarr/config:/config
+   - /home/appadmin/radarr/downloads:/downloads
+   - /home/appadmin/radarr/movies:/movies
+   - /etc/localtime:/etc/localtime:ro
+   - /home/appadmin/transmission/complete:/data/completed
+   - /home/appadmin/transmission/incomplete:/data/incomplete
+   - /home/appadmin/sabnzbd/config/Downloads/complete:/config/Downloads/complete
+   - /home/appadmin/sabnzbd/config/incomplete:/incomplete-downloads
+  ports:
+   - 8096:8096
+   - 8920:8920 #optional
+   - 7359:7359/udp #optional
+   #- 1900:1900/udp #optional
+  deploy:
+   resources:
+    reservations:
+     devices:
+      - driver: nvidia
+        count: all
+        capabilities: [gpu]
   restart: unless-stopped
